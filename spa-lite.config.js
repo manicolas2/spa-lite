@@ -1,5 +1,5 @@
 const app = {
-  title: 'SPA Lite',
+  title: 'LBWDG Demo',
   shortName: 'SPA Lite',
   description: 'This is a test'
 };

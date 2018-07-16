@@ -16,7 +16,15 @@ class Page extends ElementLiteStatic(HTMLElement) {
           },
           {
             label: 'About',
-            href: '/about'
+            href: '/#about'
+          },
+          {
+            label: 'Members',
+            href: '/#members'
+          },
+          {
+            label: 'Topics',
+            href: '/#topics'
           }
         ]
       }

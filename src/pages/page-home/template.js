@@ -1,45 +1,26 @@
-import { html } from '@littleq/element-lite';
+import { html } from '@littleq/element-lite/lib/lit-html/lib/lit-extended.js';
 
 const template = (self) => html`
-<main>
+<header>
   <img class="thumbnail" alt="Banner of LB Web Developers" src="/assets/banner.jpg">
-  <section>
-    <mark-lite class="section-about">
-      <h1 id="about"> About LB Web Developers </h1>
-      ${self.about.length ? html`
-        ${self.about.map(i => html`
-          <p> ${i} </p>
-        `)}
-      ` : html`
-      `}
-      <p id="topics">
-        <h1>Topics discussed: </h1>
-        <ul>
-        ${self.topics.length ? html`
-          ${self.topics.map(i => html`
-            <li> ${i} </li>
-          `)}
-        ` : html`
-        `}
-        </ul>
-      </p>
-    </mark-lite>
-  </section>
-  <section class="section-members">
-    <h1 id="members"> Members: </h1>
-    <div>
+</header>
+<main class="main" role="main">
+  <general-section>
+    <mark-lite class="section-text" text="${self.about}"></mark-lite>
+    <section class="section-members">
+    <h1 class="members"> Members: </h1>
+    <div class="div-members">
       ${self.members.length ? html`
-        ${self.members.map(i => html`
-          <span id="thumbnail-space">
-            <a href=#>
-              <image class="thumbnail-members" alt="${i}" src="/assets/images/${i}.jpg"> </image>
-            </a>
+        ${self.members.map(members => html`
+          <span class="thumbnail-space">
+              <image class="thumbnail-members" alt="${members.alt}" src="/assets/images/${members.alt}.jpg"> </image>
           </span>
         `)}
       ` : html`
       `}
     </div>
-  </section>
+    </section>
+  </general-section>
   <footer>
     <h1>LB Web Dev Group </h1>
     <div class = "spacer"> </div>

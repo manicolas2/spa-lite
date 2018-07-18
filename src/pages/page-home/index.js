@@ -1,34 +1,41 @@
-import { ElementLiteLit, html } from '@littleq/element-lite';
+import { ElementLiteLit, html, prepareShadyCSS } from '@littleq/element-lite/element-lite-lit.js';
+import { updateState } from '../../utils/ui-state.js';
 import { template } from './template.js';
 import style from './style.styl';
-const { HTMLElement, customElements } = window;
+import '../../components/mark-lite/index.js';
+import '../../components/general-section/index.js';
+const { HTMLElement, customElements, fetch } = window;
 
-class Page extends ElementLiteLit(HTMLElement) {
+class Page extends ElementLiteLit(HTMLElement, style.toString()) {
   static get is () { return 'page-home'; }
 
   constructor () {
     super();
     this.__data = {
-      about: [
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent ornare tincidunt cursus. Vestibulum ut tincidunt tortor, non facilisis ante. Vestibulum pulvinar et metus nec sodales. Nam viverra sem eget leo lobortis, a malesuada felis fringilla.',
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent ornare tincidunt cursus. Vestibulum ut tincidunt tortor, non facilisis ante. Vestibulum pulvinar et metus nec sodales. Nam viverra sem eget leo lobortis, a malesuada felis fringilla.',
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent ornare tincidunt cursus. Vestibulum ut tincidunt tortor, non facilisis ante. Vestibulum pulvinar et metus nec sodales. Nam viverra sem eget leo lobortis, a malesuada felis fringilla.'
-      ],
-      topics: [
-        'Building Backend Node JS Using Fastify',
-        'Fastify and Mongoose',
-        'Project Management',
-        'SPA-Lite',
-        'The 12 Factor App'
-      ],
-      members: [
-        'TJ Monserrat',
-        'Sonny Maniaol',
-        'Mylah Anacleto',
-        'Zydrick Delima',
-        'Gauven Pascua'
-      ]
+      members: []
     };
+    this.location = window.location.hostname === 'localhost' ? '' : '';
+  }
+
+  connectedCallback () {
+    super.connectedCallback();
+    const location = this.location;
+    this.fetchAbout(location);
+    this.fetchMembers(location);
+    if (window.gtag) {
+      window.gtag('config', window.gaId, {
+        'page_title': 'Homepage',
+        'page_path': '/'
+      });
+    }
+  }
+
+  async fetchAbout (location) {
+    this.about = await fetch(`${location}/data/about.md`).then(result => result.text());
+  }
+
+  async fetchMembers (location) {
+    this.members = await fetch(`${location}/data/members.json`).then(result => result.json());
   }
 
   set about (about) {
@@ -37,16 +44,8 @@ class Page extends ElementLiteLit(HTMLElement) {
   }
 
   get about () {
+    updateState('currentProgress', 'loaded');
     return this.__data['about'];
-  }
-
-  set topics (topics) {
-    this.__data['topics'] = topics;
-    this.invalidate();
-  }
-
-  get topics () {
-    return this.__data['topics'];
   }
 
   set members (members) {
@@ -55,13 +54,16 @@ class Page extends ElementLiteLit(HTMLElement) {
   }
 
   get members () {
-    return this.__data['members'].sort();
+    updateState('currentProgress', 'loaded');
+    return this.__data['members'];
   }
 
   render () {
     return html`<style>${style.toString()}</style>${template(this)}`;
   }
 }
+
+if (window.ShadyCSS) prepareShadyCSS(style.toString(), Page.is);
 
 if (!customElements.get(Page.is)) {
   customElements.define(Page.is, Page);
